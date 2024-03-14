@@ -1,5 +1,5 @@
 const cell_side = 25;
-const width = Math.round(window.innerWidth * 0.94 / cell_side) * cell_side;
+const width = Math.round(window.innerWidth * 0.9 / cell_side) * cell_side;
 const height = Math.round(window.innerHeight * 0.8 / cell_side) * cell_side;
 
 const cells_x = width / cell_side;
