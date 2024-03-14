@@ -1,5 +1,5 @@
 const cell_side = 25;
-const width = Math.round(window.innerWidth * 0.8 / cell_side) * cell_side;
+const width = Math.round(window.innerWidth * 0.94 / cell_side) * cell_side;
 const height = Math.round(window.innerHeight * 0.8 / cell_side) * cell_side;
 
 const cells_x = width / cell_side;
@@ -7,6 +7,9 @@ const cells_y = height / cell_side;
 
 var cells = [];
 var canvas;
+
+var game_started = false;
+var game_interval;
 
 function setup() {
     canvas = createCanvas(width, height);
@@ -23,6 +26,7 @@ function setup() {
 
     document.getElementById("p5-container").addEventListener("click", add_cell);
     document.getElementById("button").addEventListener("click", start);
+    document.getElementById("update-button").addEventListener("click", update_speed);
 }
 
 function draw() {
@@ -41,9 +45,17 @@ function draw() {
     fill(0)
     for (let y = 0; y < cells.length; y++) {
         for (let x = 0; x < cells[y].length; x++) {
-            text(count_neigh(y, x), x * cell_side + cell_side / 2, y * cell_side + cell_side / 2);
-            if (cells[y][x] == -1) continue;
-            rect(x * cell_side, y * cell_side, cell_side, cell_side);
+            // Draw the cells
+            if (cells[y][x] == 1) {
+                rect(x * cell_side, y * cell_side, cell_side, cell_side);
+            }
+
+            // Draw neighbour count
+            if (document.getElementById("show-neigh").checked) {
+                if (cells[y][x] == 1) fill(255);
+                text(count_neigh(y, x), x * cell_side + cell_side / 2, y * cell_side + cell_side / 2);
+                fill(0);
+            }
         }
     }
 }
@@ -63,46 +75,63 @@ function add_cell(e) {
 }
 
 function start() {
-    game();
-    setInterval(game, 1000);
+    let btn = document.getElementById("button");
+    if (!game_started) {
+        game();
+        game_interval = setInterval(game, document.getElementById("interval-speed").value);
+        game_started = true;
+        btn.innerText = "Pause game";
+    } else {
+        clearInterval(game_interval);
+        game_started = false;
+        btn.innerText = "Resume game";
+    }
+}
+
+function update_speed() {
+    if (game_started) {
+        clearInterval(game_interval);
+        game_interval = setInterval(game, document.getElementById("interval-speed").value);
+        game();
+    }
 }
 
 function game() {
     let next = [];
     for (let y = 0; y < cells.length; y++) {
-        next.push([]);
+        let y_array = [];
         for (let x = 0; x < cells[y].length; x++) {
+            y_array.push(-1);
             let neigh = count_neigh(y, x);
             let alive = cells[y][x] == 1;
-            if (neigh == 3 && !alive) next[y][x] = 1;
-            if (neigh >= 2 && neigh <= 3 && alive) next[y][x] = 1;
-            if ((neigh < 2 || neigh) < 3 && alive) next[y][x] = 0;
+            if (neigh == 3 && !alive) y_array[x] = 1;
+            if (neigh >= 2 && neigh <= 3 && alive) y_array[x] = 1;
         }
+        next.push(y_array);
     }
     cells = next;
 }
 
 function count_neigh(iy, ix) {
     let count = 0;
-    for (let i = -1; i <= 1; i++) {
-        let yb = iy + 1;
-        yb = yb >= cells_y ? 0 : yb;
-        let yt = iy - 1;
-        yt = yt < 0 ? cells_y - 1 : yt;
 
-        let x = ix + i;
-        x = x < 0 ? cells_x - 1 : x;
-        x = x >= cells_x ? 0 : x;
+    for (let i = -1; i <= 1; i++) {
+        let yt = bound_index(iy - 1, cells_y);
+        let yb = bound_index(iy + 1, cells_y);
+        let x = bound_index(ix + i, cells_x);
+
         if (cells[yt][x] == 1) count++;
         if (cells[yb][x] == 1) count++;
     }
-    let x1 = ix + 1;
-    let x2 = ix - 1;
-    x1 = x1 < 0 ? cells_x - 1 : x1;
-    x1 = x1 >= cells_x ? 0 : x1;
-    x2 = x2 < 0 ? cells_x - 1 : x2;
-    x2 = x2 >= cells_x ? 0 : x2;
-    if (cells[iy][x1] == 1) count++;
-    if (cells[iy][x2] == 1) count++;
+
+    let xr = bound_index(ix + 1, cells_x);
+    let xl = bound_index(ix - 1, cells_x);
+    if (cells[iy][xr] == 1) count++;
+    if (cells[iy][xl] == 1) count++;
     return count;
+}
+
+function bound_index(i, length) {
+    i = i >= length ? 0 : i;
+    return i < 0 ? length - 1 : i;
 }
