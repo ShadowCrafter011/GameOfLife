@@ -26,6 +26,7 @@ function setup() {
 
     document.getElementById("p5-container").addEventListener("click", add_cell);
     document.getElementById("button").addEventListener("click", start);
+    document.getElementById("random").addEventListener("click", randomize);
     document.getElementById("update-button").addEventListener("click", update_speed);
 }
 
@@ -56,6 +57,14 @@ function draw() {
                 text(count_neigh(y, x), x * cell_side + cell_side / 2, y * cell_side + cell_side / 2);
                 fill(0);
             }
+        }
+    }
+}
+
+function randomize() {
+    for (let y = 0; y < cells.length; y++) {
+        for (let x = 0; x < cells[y].length; x++) {
+            cells[y][x] = Math.random() > document.getElementById("alive-chance").value / 100 ? -1 : 1;
         }
     }
 }
