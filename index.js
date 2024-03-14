@@ -28,6 +28,8 @@ function setup() {
     document.getElementById("button").addEventListener("click", start);
     document.getElementById("random").addEventListener("click", randomize);
     document.getElementById("update-button").addEventListener("click", update_speed);
+
+    textAlign(CENTER);
 }
 
 function draw() {
@@ -54,7 +56,7 @@ function draw() {
             // Draw neighbour count
             if (document.getElementById("show-neigh").checked) {
                 if (cells[y][x] == 1) fill(255);
-                text(count_neigh(y, x), x * cell_side + cell_side / 2, y * cell_side + cell_side / 2);
+                text(count_neigh(y, x), x * cell_side + cell_side / 2, y * cell_side + cell_side / 1.5);
                 fill(0);
             }
         }
