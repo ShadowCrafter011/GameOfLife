@@ -1,11 +1,29 @@
-#container {
+.full {
+    height: 100vh;
+    width: 100vw;
+}
+
+.container {
     display: flex;
     flex-direction: column;
     gap: .5rem;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    width: 100vw;
+}
+
+.row {
+    flex-direction: row;
+}
+
+.border:last-child {
+    border: none;
+}
+
+.border {
+    border-right: 2px solid gray;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    height: 100%;
 }
 
 #p5-container canvas {
@@ -13,7 +31,7 @@
     box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
 }
 
-button {
+button, input, select {
     font-size: large;
 }
 

@@ -8,6 +8,10 @@ const cells_y = height / cell_side;
 var cells = [];
 var canvas;
 
+var saves = {
+    "none": "none"
+}
+
 var game_started = false;
 var game_interval;
 
@@ -16,6 +20,21 @@ function setup() {
     canvas.parent("p5-container");
     background(200);
 
+    create_cells_array();
+
+    document.getElementById("p5-container").addEventListener("click", add_cell);
+    document.getElementById("button").addEventListener("click", start);
+    document.getElementById("random").addEventListener("click", randomize);
+    document.getElementById("update-button").addEventListener("click", update_speed);
+    document.getElementById("reset").addEventListener("click", reset);
+    document.getElementById("create-save").addEventListener("click", create_save);
+    document.getElementById("load-save").addEventListener("click", load_save);
+
+    textAlign(CENTER);
+}
+
+function create_cells_array() {
+    cells = [];
     for (let y = 0; y < cells_y; y++) {
         let y_array = [];
         for (let x = 0; x < cells_x; x++) {
@@ -23,13 +42,6 @@ function setup() {
         }
         cells.push(y_array);
     }
-
-    document.getElementById("p5-container").addEventListener("click", add_cell);
-    document.getElementById("button").addEventListener("click", start);
-    document.getElementById("random").addEventListener("click", randomize);
-    document.getElementById("update-button").addEventListener("click", update_speed);
-
-    textAlign(CENTER);
 }
 
 function draw() {
@@ -69,6 +81,32 @@ function randomize() {
             cells[y][x] = Math.random() > document.getElementById("alive-chance").value / 100 ? -1 : 1;
         }
     }
+}
+
+function reset() {
+    if (game_started) clearInterval(game_interval);
+    game_started = false;
+    create_cells_array();
+    document.getElementById("button").innerText = "Start game";
+}
+
+function create_save() {
+    var save_name = document.getElementById("save-name").value;
+    if (!save_name) return;
+    if (save_name in saves) return;
+    saves[save_name] = JSON.parse(JSON.stringify(cells));
+    let option_node = document.createElement("div");
+    option_node.innerHTML = `<option value="${save_name}">${save_name}<option>`;
+    document.getElementById("save-select").appendChild(option_node.firstChild);
+}
+
+function load_save() {
+    let save_name = document.getElementById("save-select").value;
+    if (!save_name || save_name == "none" || !save_name in saves) return;
+    if (game_started) clearInterval(game_interval);
+    document.getElementById("button").innerText = "Start game";
+    game_started = false;
+    cells = JSON.parse(JSON.stringify(saves[save_name]));
 }
 
 function add_cell(e) {

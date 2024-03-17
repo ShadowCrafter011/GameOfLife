@@ -9,19 +9,41 @@
     <script src="index.js" defer></script>
 </head>
 <body>
-    <div id="container">
+    <div class="container full">
         <div id="p5-container"></div>
-        <button id="button">Start game</button>
-        <div>
-            <button id="random">Randomize</button>
-            <input id="alive-chance" type="number" max="100" min="0" value="50"> % chance to be alive
-        </div>
-        <div>
-            <button id="update-button">Update speed</button>
-            <input id="interval-speed" type="number" min="100" max="2000" value="100"> ms
-        </div>
-        <div id="neigh-container">
-            <input id="show-neigh" type="checkbox"> Show neighbour count
+        <div class="container row">
+            <!--
+                <div class="container border">Templates</div>
+            -->
+            <div class="container border">
+                <div>
+                    <button id="button">Start game</button>
+                    <button id="reset">Reset</button>
+                </div>
+                <div>
+                    <button id="random">Randomize</button>
+                    <input id="alive-chance" type="number" max="100" min="0" value="50"> % chance to be alive
+                </div>
+                <div>
+                    <button id="update-button">Update speed</button>
+                    <input id="interval-speed" type="number" min="100" max="2000" value="100"> ms
+                </div>
+                <div id="neigh-container">
+                    <input id="show-neigh" type="checkbox"> Show neighbour count
+                </div>
+            </div>
+            <div class="container border">
+                <div>
+                    <input id="save-name" type="text" placeholder="Save name">
+                    <button id="create-save">Create save</button>
+                </div>
+                <div>
+                    <select id="save-select">
+                        <option value="none" selected>No save selected</option>
+                    </select>
+                    <button id="load-save">Load save</button>
+                </div>
+            </div>
         </div>
     </div>
 </body>
