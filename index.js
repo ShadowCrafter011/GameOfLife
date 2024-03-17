@@ -93,11 +93,12 @@ function reset() {
 function create_save() {
     var save_name = document.getElementById("save-name").value;
     if (!save_name) return;
-    if (save_name in saves) return;
-    saves[save_name] = JSON.parse(JSON.stringify(cells));
     let option_node = document.createElement("div");
     option_node.innerHTML = `<option value="${save_name}">${save_name}<option>`;
-    document.getElementById("save-select").appendChild(option_node.firstChild);
+    if (!(save_name in saves)) {
+        document.getElementById("save-select").appendChild(option_node.firstChild);
+    }
+    saves[save_name] = JSON.parse(JSON.stringify(cells));
 }
 
 function load_save() {
