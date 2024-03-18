@@ -14,12 +14,10 @@
         <div class="container row">
             <div class="container border">
                 <div>Templates</div>
-                <div>
-                    <select id="template-select">
-                        <option value="none">No template selected</option>
-                    </select>
-                    <button id="load-template">Load template</button>
-                </div>
+            <select id="template-select">
+                <option value="none">No template selected</option>
+            </select>
+            <button id="load-template">Load template</button>
             </div>
             <div class="container border">
                 <div>
@@ -28,11 +26,11 @@
                 </div>
                 <div>
                     <button id="random">Randomize</button>
-                    <input id="alive-chance" type="number" max="100" min="0" value="50"> % chance to be alive
+                    <input id="alive-chance" class="w-50" type="number" max="100" min="0" value="50"> % chance to be alive
                 </div>
                 <div>
                     <button id="update-button">Update speed</button>
-                    <input id="interval-speed" type="number" min="100" max="2000" value="100"> ms
+                    <input id="interval-speed" class="w-50" type="number" min="100" max="2000" value="100"> ms
                 </div>
                 <div id="neigh-container">
                     <input id="show-neigh" type="checkbox"> Show neighbour count
@@ -55,9 +53,9 @@
                 <div>Rescale cells</div>
                 <div>(Warning: Resets saves!)</div>
                 <div>
-                    <input type="number" max="25" min="5" id="new-scale" class="w-50" value="25">
-                    <button id="rescale">Rescale (px)</button>
+                    <input type="number" max="25" min="1" id="new-scale" class="w-50" value="25"> px
                 </div>
+                <button id="rescale">Rescale</button>
             </div>
         </div>
     </div>

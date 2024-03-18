@@ -1,6 +1,6 @@
 const url = new URL(location);
 
-const cell_side = url.searchParams.has("size") ? Number.parseInt(url.searchParams.get("size")) : 25;
+const cell_side = url.searchParams.has("size") ? Number.parseFloat(url.searchParams.get("size")) : 25;
 const width = Math.round(window.innerWidth * 0.9 / cell_side) * cell_side;
 const height = Math.round(window.innerHeight * 0.8 / cell_side) * cell_side;
 
@@ -10,6 +10,7 @@ const cells_x = width / cell_side;
 const cells_y = height / cell_side;
 
 var cells = [];
+var generations = 0;
 var canvas;
 
 var saves = {}
@@ -19,175 +20,80 @@ var template_start_index = null;
 
 const templates = {
     "Gosper Glider gun": {
-        type: "plain",
-        value: `
-            000000000000000000000000100000000000
-            000000000000000000000010100000000000
-            000000000000110000001100000000000011
-            000000000001000100001100000000000011
-            110000000010000010001100000000000000
-            110000000010001011000010100000000000
-            000000000010000010000000100000000000
-            000000000001000100000000000000000000
-            000000000000110000000000000000000000
-        `
+        type: "rle",
+        url: "gosperglidergun.rle"
+    },
+    "Breeder 1": {
+        type: "rle",
+        url: "breeder1.rle"
+    },
+    "Riley's Breeder": {
+        type: "rle",
+        url: "rileysbreeder.rle"
     },
     "Simkin Glider gun": {
         type: "plain",
-        value: `
-            110000011000000000000000000000000
-            110000011000000000000000000000000
-            000000000000000000000000000000000
-            000011000000000000000000000000000
-            000011000000000000000000000000000
-            000000000000000000000000000000000
-            000000000000000000000000000000000
-            000000000000000000000000000000000
-            000000000000000000000000000000000
-            000000000000000000000011011000000
-            000000000000000000000100000100000
-            000000000000000000000100000010011
-            000000000000000000000111000100011
-            000000000000000000000000001000000
-            000000000000000000000000000000000
-            000000000000000000000000000000000
-            000000000000000000000000000000000
-            000000000000000000001100000000000
-            000000000000000000001000000000000
-            000000000000000000000111000000000
-            000000000000000000000001000000000
-    `
+        url: "simkinglidergun.plain"
     },
     "Spacefiller": {
         type: "plain",
-        value: `
-            000000000000000000100000000
-            000000000000000001110000000
-            000000000000111000011000000
-            000000000001001110010110000
-            000000000010001010010100000
-            000000000010000101010101100
-            000000000000100001010001100
-            111100000101000010001011100
-            100011010111011000000000110
-            100000110000010000000000000
-            010011010010010110000000000
-            000000010101010101000001111
-            010011010010010011010110001
-            100000110001010100011000001
-            100011010110010010010110010
-            111100000101010101010000000
-            000000000011010010010110010
-            000000000000010000011000001
-            011000000000110111010110001
-            001110100010000101000001111
-            001100010100001000000000000
-            001101010101000010000000000
-            000001010010100010000000000
-            000011010011100100000000000
-            000000110000111000000000000
-            000000011100000000000000000
-            000000001000000000000000000
-        `
+        url: "spacefiller.plain"
     },
     "Glider": {
         type: "plain",
-        value: `
-            001
-            101
-            011
-        `
+        url: "glider.plain"
     },
     "Light weight spaceship": {
         type: "plain",
-        value: `
-            10010
-            00001
-            10001
-            01111
-        `
+        url: "lightweightspaceship.plain"
     },
     "Middle weight spaceship": {
         type: "plain",
-        value: `
-            001000
-            100010
-            000001
-            100001
-            011111
-        `
+        url: "middleweightspaceship.plain"
     },
     "Heavy weight spaceship": {
         type: "plain",
-        value: `
-            0011000
-            1000010
-            0000001
-            1000001
-            0111111
-        `
+        url: "heavyweightspaceship.plain"
+    },
+    "Growing spaceship": {
+        type: "rle",
+        url: "growingspaceship.rle"
+    },
+    "3 cell puffsuppressor spaceship": {
+        type: "rle",
+        url: "3puffsuppressorspaceship.rle"
+    },
+    "Wing spaceship": {
+        type: "rle",
+        url: "wingspaceship.rle"
+    },
+    "Barge": {
+        type: "rle",
+        url: "barge.rle"
     },
     "Eater 1": {
         type: "plain",
-        value: `
-            1100
-            1010
-            0010
-            0011
-        `
+        url: "eater1.plain"
     },
     "Blinker": {
         type: "plain",
-        value: `
-            111
-        `
+        url: "blinker.plain"
     },
     "Toad": {
         type: "plain",
-        value: `
-            0111
-            1110
-        `
+        url: "toad.plain"
     },
     "Beacon": {
         type: "plain",
-        value: `
-            1100
-            1100
-            0011
-            0011
-        `
+        url: "beacon.plain"
     },
     "Pulsar": {
         type: "plain",
-        value: `
-            0011100011100
-            0000000000000
-            1000010100001
-            1000010100001
-            1000010100001
-            0011100011100
-            0000000000000
-            0011100011100
-            1000010100001
-            1000010100001
-            1000010100001
-            0000000000000
-            0011100011100
-        `
+        url: "pulsar.plain"
     },
     "Pentadecathlon": {
         type: "plain",
-        value: `
-            111
-            101
-            111
-            111
-            111
-            111
-            101
-            111
-        `
+        url: "pentadecathlon.plain"
     }
 }
 
@@ -214,6 +120,7 @@ function setup() {
     document.addEventListener("mousemove", template_move);
 
     textAlign(CENTER);
+    noStroke();
 
     let template_select = document.getElementById("template-select");
     for (let template in templates) {
@@ -273,14 +180,19 @@ function draw() {
 
     // Draw the template
     if (template_start_index) {
-        fill(0, 255, 0);
+        fill(200);
+        stroke(0);
+        rect(
+            (current_template[0].length + template_start_index[1]) * cell_side,
+            (current_template.length + template_start_index[0]) * cell_side,
+            -current_template[0].length * cell_side,
+            -current_template.length * cell_side
+        );
+        noStroke();
+        fill(0, 200, 0);
         for (let y = 0; y < current_template.length; y++) {
             for (let x = 0; x < current_template[y].length; x++) {
-                if (current_template[y][x] == "0") {
-                    fill(200);
-                } else {
-                    fill(0, 255, 0);
-                }
+                if (current_template[y][x] == "0") continue;
 
                 let ix = bound_index(x + template_start_index[1], cells_x);
                 let iy = bound_index(y + template_start_index[0], cells_y);
@@ -315,12 +227,86 @@ function load_template() {
     if (!template_name || !(template_name in templates)) return;
     
     let template_array = [];
-    if (templates[template_name].type == "plain") {
-        let template_rows = templates[template_name].value.trim().split("\n");
-        for (let row of template_rows) {
-            template_array.push(row.trim().split(""));
-        }
+    let template = templates[template_name];
+
+    let request = new XMLHttpRequest();
+    request.open("GET", `templates/${template.url}`, false);
+    request.send(null);
+    
+    let template_text = request.responseText;
+
+    switch (template.type) {
+        case "plain":
+            let template_rows = template_text.trim().split("\n");
+            for (let row of template_rows) {
+                template_array.push(row.trim().split(""));
+            }
+            break;
+        case "rle":
+            let rle = template_text;
+            rle = rle.substring(0, rle.indexOf("!"));
+            rle = rle.replaceAll("\r", "");
+            rle = rle.split("\n");
+            
+            let first_line = null;
+            let lines = [];
+            for (let line of rle) {
+                if (line.startsWith("#")) continue;
+                if (!first_line) {
+                    first_line = line;
+                    continue;
+                }
+                lines.push(line);
+            }
+            
+            lines = lines.join("");
+            first_line = first_line.split(", ");
+            let py = first_line[1].split(" ")[2];
+            let px = first_line[0].split(" ")[2];
+
+            for (let y = 0; y < py; y++) {
+                let y_array = [];
+                for (let x = 0; x < px; x++) {
+                    y_array.push(0);
+                }
+                template_array.push(y_array);
+            }
+            
+            let y_index = 0;
+            let x_index = 0;
+            let num = 0;
+            for (let char of lines.split("")) {
+                switch (char) {
+                    case "b":
+                        num = Math.max(1, num);
+                        x_index += num;
+                        break;
+                    case "o":
+                        num = Math.max(1, num);
+                        for (let x = x_index; x < x_index + num; x++) {
+                            template_array[y_index][x] = 1;
+                        }
+                        x_index += num;
+                        break;
+                    case "$":
+                        y_index += Math.max(1, num);
+                        x_index = 0;
+                        break;
+                    default:
+                        num = num * 10 + parseInt(char);
+                        break;
+                }
+
+                if (["b", "o", "$"].includes(char)) {
+                    num = 0;
+                }
+            }
+            console.log(template_array)
+            break;
+        default:
+            break;
     }
+
     current_template = template_array;
 }
 
@@ -350,6 +336,7 @@ function template_move(e) {
 function reset() {
     if (game_started) clearInterval(game_interval);
     game_started = false;
+    generations = 0;
     create_cells_array();
     document.getElementById("button").innerText = "Start game";
 }
@@ -409,11 +396,11 @@ function start() {
         game();
         game_interval = setInterval(game, document.getElementById("interval-speed").value);
         game_started = true;
-        btn.innerText = "Pause game";
+        btn.innerText = `Pause game (T ${generations})`;
     } else {
         clearInterval(game_interval);
         game_started = false;
-        btn.innerText = "Resume game";
+        btn.innerText = `Resume game (T ${generations})`;
     }
 }
 
@@ -439,6 +426,8 @@ function game() {
         next.push(y_array);
     }
     cells = next;
+    generations += 1;
+    document.getElementById("button").innerText = `Pause game (T ${generations})`;
 }
 
 function count_neigh(iy, ix) {
