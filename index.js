@@ -151,6 +151,7 @@ function draw() {
     background(200);
 
     // Draw lines
+    stroke(0);
     if (cell_side >= 10) {
         for (let x = 0; x <= width; x += cell_side) {
             line(x, 0, x, height);
@@ -159,6 +160,7 @@ function draw() {
             line(0, y, width, y);
         }
     }
+    noStroke();
 
     // Draw the cells
     fill(0)
