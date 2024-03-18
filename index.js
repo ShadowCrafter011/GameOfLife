@@ -185,19 +185,25 @@ function draw() {
         fill(200);
         stroke(0);
         rect(
-            (current_template[0].length + template_start_index[1]) * cell_side,
-            (current_template.length + template_start_index[0]) * cell_side,
-            -current_template[0].length * cell_side,
-            -current_template.length * cell_side
+            template_start_index[1] * cell_side,
+            template_start_index[0] * cell_side,
+            current_template[0].length * cell_side,
+            current_template.length * cell_side
         );
-        noStroke();
+        if (cell_side < 10) {
+            noStroke();
+        }
         fill(0, 200, 0);
         for (let y = 0; y < current_template.length; y++) {
+            let iy = bound_index(y + template_start_index[0], cells_y);
+            line(0, iy * cell_side, width, iy * cell_side);
             for (let x = 0; x < current_template[y].length; x++) {
-                if (current_template[y][x] == "0") continue;
-
                 let ix = bound_index(x + template_start_index[1], cells_x);
-                let iy = bound_index(y + template_start_index[0], cells_y);
+                if (current_template[y][x] == "0") {
+                    line(ix * cell_side, 0, ix * cell_side, height);
+                    continue;
+                }
+
                 rect(ix * cell_side, iy * cell_side, cell_side, cell_side);
             }
         }
