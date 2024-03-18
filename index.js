@@ -19,6 +19,14 @@ var current_template = null;
 var template_start_index = null;
 
 const templates = {
+    "Glider": {
+        type: "plain",
+        url: "glider.plain"
+    },
+    "Eater 1": {
+        type: "plain",
+        url: "eater1.plain"
+    },
     "Gosper Glider gun": {
         type: "rle",
         url: "gosperglidergun.rle"
@@ -38,10 +46,6 @@ const templates = {
     "Spacefiller": {
         type: "plain",
         url: "spacefiller.plain"
-    },
-    "Glider": {
-        type: "plain",
-        url: "glider.plain"
     },
     "Light weight spaceship": {
         type: "plain",
@@ -70,10 +74,6 @@ const templates = {
     "Barge": {
         type: "rle",
         url: "barge.rle"
-    },
-    "Eater 1": {
-        type: "plain",
-        url: "eater1.plain"
     },
     "Blinker": {
         type: "plain",
