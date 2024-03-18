@@ -26,6 +26,14 @@
     height: 100%;
 }
 
+.w-50 {
+    max-width: 5rem;
+}
+
+.w-100 {
+    max-width: 10rem;
+}
+
 #p5-container canvas {
     border: 1px solid black;
     box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
